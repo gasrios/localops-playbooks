@@ -47,6 +47,7 @@ The existing playbooks suit my particular needs and may, or may not, interest yo
 * [NFS Server](https://tools.ietf.org/html/rfc5661)
 * [Nginx](https://nginx.org/en/)
 * [Node.js](https://nodejs.org/en/)
+* [NordVPN](https://nordvpn.com/)
 * [Packer](https://packer.io/) by Hashicorp
 * [PHP](https://www.php.net/) with [Symfony](https://symfony.com/) and [The API Platform Framework](https://api-platform.com/) support
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
