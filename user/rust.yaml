@@ -1,0 +1,27 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Look for installer
+    stat:
+      path: /tmp/install_rust.sh
+    register: installer
+
+  - name: Look for rustup
+    stat:
+      path: "{{ lookup('env', 'HOME') }}/.cargo/bin/rustup"
+    register: rustup
+
+  # https://www.rust-lang.org/tools/install
+  # We need to save the script locally in order to pass command line parameter '-y'
+  - name: Download installer
+    shell: curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > /tmp/install_rust.sh
+    when: not installer.stat.exists and not rustup.stat.exists
+
+  - name: Install
+    shell: sh /tmp/install_rust.sh -y
+    when: not rustup.stat.exists
+
+  - name: Update
+    shell: rustup update
+    when: rustup.stat.exists

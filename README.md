@@ -52,6 +52,7 @@ The existing playbooks suit my particular needs and may, or may not, interest yo
 * [PHP](https://www.php.net/) with [Symfony](https://symfony.com/) and [The API Platform Framework](https://api-platform.com/) support
 * [PhpStorm](https://www.jetbrains.com/phpstorm/)
 * [ReactJs](https://reactjs.org/)
+* [Rust](https://www.rust-lang.org/)
 * [Salesforce](https://www.salesforce.com/)
 * [Signal](https://signal.org/download/)
 * [Slack](https://slack.com/)
