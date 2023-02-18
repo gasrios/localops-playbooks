@@ -1,0 +1,33 @@
+# See https://github.com/helix-editor/helix
+- hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Look for Helix installation
+    stat:
+      path: "{{ lookup('env', 'HOME') }}/.cargo/bin/hx"
+    register: helix
+
+  - name: Clone Helix github repository
+    when: not helix.stat.exists
+    git:
+      repo: https://github.com/helix-editor/helix
+      dest: /tmp/helix
+      clone: yes
+      update: yes
+
+  - name: Install Helix
+    when: not helix.stat.exists
+    shell: cargo install --locked --path helix-term
+    args:
+      chdir: /tmp/helix
+
+  - name: Create directory for helix runtime
+    file:
+      path: "{{ lookup('env', 'HOME') }}/.config/helix/runtime"
+      state: directory
+
+  - name: Copy Helix runtime
+    synchronize:
+      src: /tmp/helix/runtime
+      dest: "{{ lookup('env', 'HOME') }}/.config/helix/runtime"
