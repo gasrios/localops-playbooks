@@ -1,0 +1,8 @@
+- hosts: all
+  gather_facts: false
+  tasks:
+    - name: Install VS Code Rust extensions
+      block:
+      - shell: code --install-extension rust-lang.rust-analyzer
+      - shell: code --install-extension ms-vscode.makefile-tools
+      - shell: code --install-extension vadimcn.vscode-lldb
