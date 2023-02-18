@@ -32,6 +32,7 @@ The existing playbooks suit my particular needs and may, or may not, interest yo
 * [GitHub CLI](https://cli.github.com/)
 * [Google Chrome](https://www.google.com/chrome)
 * [Google Cloud SDK](https://cloud.google.com/sdk)
+* [Helix](https://github.com/helix-editor/helix)
 * [Helm](https://helm.sh/)
 * [http-server](https://www.npmjs.com/package/http-server)
 * [IntelliJ](https://www.jetbrains.com/idea/)
