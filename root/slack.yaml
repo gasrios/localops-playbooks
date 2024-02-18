@@ -7,19 +7,20 @@
   gather_facts: false
   tasks:
 
-  - name: Add Slack packagecloud apt repository signing key
+  - name: Add Slack repo
     become: yes
     become_user: root
-    apt_key:
-      url: https://packagecloud.io/slacktechnologies/slack/gpgkey
+    deb822_repository:
+      name: slack
+      types: deb
+      uris: https://packagecloud.io/slacktechnologies/slack/debian/
+      suites: jessie
+      components:
+        - main
+      architectures: amd64
+      signed_by: https://packagecloud.io/slacktechnologies/slack/gpgkey
       state: present
-
-  - name: Add Slack packagecloud repo
-    become: yes
-    become_user: root
-    apt_repository:
-      repo: deb [arch=amd64] https://packagecloud.io/slacktechnologies/slack/debian/ jessie main
-      state: present
+      enabled: true
 
   - name: Update apt cache, if older than a day
     become: yes
