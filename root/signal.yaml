@@ -4,19 +4,20 @@
   gather_facts: false
   tasks:
 
-  - name: Install official public software signing key
+  - name: Add Signal repo
     become: yes
     become_user: root
-    apt_key:
-      url: https://updates.signal.org/desktop/apt/keys.asc
+    deb822_repository:
+      name: signal
+      types: deb
+      uris: https://updates.signal.org/desktop/apt
+      suites: xenial
+      components:
+        - main
+      architectures: amd64
+      signed_by: https://updates.signal.org/desktop/apt/keys.asc
       state: present
-
-  - name: Add repository to list of repositories
-    become: yes
-    become_user: root
-    apt_repository:
-      repo: deb [arch=amd64] https://updates.signal.org/desktop/apt xenial main
-      state: present
+      enabled: true
 
   - name: Update apt cache, if older than a day
     become: yes

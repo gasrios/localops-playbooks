@@ -1,20 +1,23 @@
+# https://support.mozilla.org/en-US/kb/install-firefox-linux#w_install-firefox-deb-package-for-debian-based-distributions
+
 - hosts: all
   gather_facts: false
   tasks:
 
-  - name: Add Firefox apt repository signing key
+  - name: Add Mozilla repo
     become: yes
     become_user: root
-    apt_key:
-      url: https://packages.mozilla.org/apt/repo-signing-key.gpg
+    deb822_repository:
+      name: firefox
+      types: deb
+      uris: https://packages.mozilla.org/apt
+      suites: mozilla
+      components:
+        - main
+      architectures: amd64
+      signed_by: https://packages.mozilla.org/apt/repo-signing-key.gpg
       state: present
-
-  - name: Add Firefox apt repo
-    become: yes
-    become_user: root
-    apt_repository:
-      repo: deb https://packages.mozilla.org/apt mozilla main
-      state: present
+      enabled: true
 
   - name: Update apt cache, if older than a day
     become: yes

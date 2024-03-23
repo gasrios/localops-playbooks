@@ -2,19 +2,20 @@
   gather_facts: false
   tasks:
 
-  - name: Add Google Chrome apt repository signing key
+  - name: Add Google repo
     become: yes
     become_user: root
-    apt_key:
-      url: https://dl.google.com/linux/linux_signing_key.pub
+    deb822_repository:
+      name: google
+      types: deb
+      uris: http://dl.google.com/linux/chrome/deb/
+      suites: stable
+      components:
+        - main
+      architectures: amd64
+      signed_by: https://dl.google.com/linux/linux_signing_key.pub
       state: present
-
-  - name: Add Google Chrome apt repo
-    become: yes
-    become_user: root
-    apt_repository:
-      repo: deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main
-      state: present
+      enabled: true
 
   - name: Update apt cache, if older than a day
     become: yes

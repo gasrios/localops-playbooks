@@ -2,20 +2,28 @@
   gather_facts: false
   tasks:
 
+  # See https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html#examples
   - name: Add Dropbox apt repository signing key
     become: yes
     become_user: root
     apt_key:
       keyserver: keyserver.ubuntu.com
-      id: 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
+      id: FC918B335044912E
       state: present
 
-  - name: Add Dropbox apt repo
+  - name: Add Dropbox repo
     become: yes
     become_user: root
-    apt_repository:
-      repo: deb [arch=amd64] http://linux.dropbox.com/ubuntu bionic main
+    deb822_repository:
+      name: dropbox
+      types: deb
+      uris: http://linux.dropbox.com/debian
+      suites: bookworm
+      components:
+        - main
+      architectures: amd64
       state: present
+      enabled: true
 
   - name: Update apt cache, if older than a day
     become: yes
