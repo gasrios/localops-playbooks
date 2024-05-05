@@ -12,6 +12,7 @@
       state: latest
       pkg: apt-transport-https
 
+  # TODO: installing keys like this leads to duplication and annoying error messages
   - name: Install official repository signing key
     become: yes
     become_user: root
