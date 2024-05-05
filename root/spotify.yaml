@@ -6,7 +6,7 @@
     become: yes
     become_user: root
     apt_key:
-      url: https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg
+      url: https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg
       state: present
 
   - name: Add Spotify apt repo
@@ -16,12 +16,11 @@
       repo: deb http://repository.spotify.com stable non-free
       state: present
 
-  - name: Update apt cache, if older than a day
+  - name: Update apt cache
     become: yes
     become_user: root
     apt:
       update_cache: yes
-      cache_valid_time: 86400
 
   - name: Install spotify-client
     become: yes
