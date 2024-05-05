@@ -11,6 +11,14 @@
       id: FC918B335044912E
       state: present
 
+  # TODO this is specific to Debian, make it conditional
+  - name: Install python3-debian
+    become: yes
+    become_user: root
+    apt:
+      state: latest
+      pkg: python3-debian
+
   - name: Add Dropbox repo
     become: yes
     become_user: root
