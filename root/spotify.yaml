@@ -6,7 +6,7 @@
     become: yes
     become_user: root
     apt_key:
-      url: https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg
+      url: https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg
       state: present
 
   - name: Add Spotify apt repo
