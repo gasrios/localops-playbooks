@@ -1,30 +1,23 @@
-# Only works with Ubuntu / Nautilus
+# This needs updating. See https://help.mega.io/installs-apps/desktop/linux
 - hosts: all
   tasks:
 
-  - name: Get OS version
-    shell: egrep '^VERSION_ID="[^"]+"$' /etc/os-release | sed 's/^VERSION_ID="\([^"]\+\)"$/\1/'
-    register: version
-
-#  - debug:
-#      msg: "{{ version.stdout }}"
-
   - name: Download MEGA DEB package
     get_url:
-      url="https://mega.nz/linux/repo/xUbuntu_{{ version.stdout }}/amd64/megasync-xUbuntu_{{ version.stdout }}_amd64.deb"
-      dest="/tmp/megasync-xUbuntu_{{ version.stdout }}_amd64.deb"
+      url="https://mega.nz/linux/repo/Debian_testing/amd64/megasync_5.6.0-1.1_amd64.deb"
+      dest="/tmp/megasync_5.6.0-1.1_amd64.deb"
 
   - name: Install MEGA DEB package
     become: true
     become_user: root
-    apt: deb=/tmp/megasync-xUbuntu_{{ version.stdout }}_amd64.deb
+    apt: deb=/tmp/megasync_5.6.0-1.1_amd64.deb
 
   - name: Download MEGA Nautilus integration DEB package
     get_url:
-      url="https://mega.nz/linux/repo/xUbuntu_{{ version.stdout }}/amd64/nautilus-megasync-xUbuntu_{{ version.stdout }}_amd64.deb"
-      dest="/tmp/nautilus-megasync-xUbuntu_{{ version.stdout }}_amd64.deb"
+      url="https://mega.nz/linux/repo/Debian_testing/amd64/nautilus-megasync_5.3.0-2.1_amd64.deb"
+      dest="/tmp/nautilus-megasync_5.3.0-2.1_amd64.deb"
 
   - name: Install MEGA DEB package
     become: true
     become_user: root
-    apt: deb=/tmp/nautilus-megasync-xUbuntu_{{ version.stdout }}_amd64.deb
+    apt: deb=/tmp/nautilus-megasync_5.3.0-2.1_amd64.deb
