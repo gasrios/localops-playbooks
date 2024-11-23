@@ -1,22 +1,35 @@
+# See https://downloads.nordcdn.com/apps/linux/install.sh
 - hosts: all
+  gather_facts: false
   tasks:
 
-  - name: Download NordVPN DEB package
-    get_url:
-      url=https://repo.nordvpn.com/deb/nordvpn/debian/pool/main/nordvpn-release_1.0.0_all.deb
-      dest=/tmp/nordvpn-release_1.0.0_all.deb
-
-  - name: Install NordVPN DEB package (configures repo)
-    become: true
+  - name: Install apt-transport-https
+    become: yes
     become_user: root
-    apt: deb=/tmp/nordvpn-release_1.0.0_all.deb
+    apt:
+      state: latest
+      pkg: apt-transport-https
 
-  - name: Update apt cache, if older than a day
+  - name: Add NordVPN repo
+    become: yes
+    become_user: root
+    deb822_repository:
+      name: nordvpn
+      types: deb
+      uris: https://repo.nordvpn.com/deb/nordvpn/debian
+      suites: stable
+      components:
+        - main
+      architectures: amd64
+      signed_by: https://repo.nordvpn.com/gpg/nordvpn_public.asc
+      state: present
+      enabled: true
+
+  - name: Update apt cache
     become: yes
     become_user: root
     apt:
       update_cache: yes
-      cache_valid_time: 86400
 
   - name: Install NordVPN
     become: yes
