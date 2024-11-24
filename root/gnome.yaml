@@ -20,6 +20,9 @@
       - gnome-system-monitor
       - gnome-terminal
       - gnome-tweaks
+      - gnome-shell-extension-appindicator
+      - gnome-shell-extension-dashtodock
+      - gnome-shell-extension-desktop-icons-ng
       - nautilus
       - nautilus-wipe
       - network-manager-gnome
