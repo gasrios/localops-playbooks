@@ -11,7 +11,7 @@ then
   echo 'Static code check found no errors'
 fi
 
-for DISTRO in ubuntu-18.04 ubuntu-20.04
+for DISTRO in ubuntu-20.04
 do
   echo Testing $DISTRO
   docker run \
@@ -21,5 +21,5 @@ do
     -v $(pwd):/home/test/localops \
     -w /home/test/localops \
     localops:${DISTRO} \
-    "''. ~/.profile && ./localops-cli.sh $PLAYBOOK $PLAYBOOK''"
+    "''. ~/.profile && localops $PLAYBOOK $PLAYBOOK''"
 done
