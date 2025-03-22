@@ -14,3 +14,15 @@
     apt:
       pkg: uidmap
       state: latest
+
+  - name: If user can run sudo, set subuids
+    become: yes
+    become_user: root
+    # TODO: this creates the same interval for different users
+    shell: "/usr/sbin/usermod -v 100000-165534 {{ lookup('env', 'USER') }}"
+
+  - name: If user can run sudo, set subgids
+    become: yes
+    become_user: root
+    # TODO: this creates the same interval for different users
+    shell: "/usr/sbin/usermod -w 100000-165534 {{ lookup('env', 'USER') }}"

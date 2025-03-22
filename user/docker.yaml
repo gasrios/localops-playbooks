@@ -3,39 +3,8 @@
 - hosts: all
   tasks:
 
-  # We do not need a password, this is only meant to test whether this user can sudo.
-  - name: Test whether this user can run sudo
-    shell: echo '' | sudo -kSv
-    register: output
-    ignore_errors: True
-
-  # See https://docs.docker.com/engine/security/rootless/#prerequisites.
-  - name: If user cannot run sudo, give additional instructions
-    when: "output.stderr == 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    debug:
-      msg: |
-        An administrator must run the following commands to enable you to use rootless Docker:
-        	sudo usermod -v 100000-165534 {{ lookup('env', 'USER') }}
-        	sudo usermod -w 100000-165534 {{ lookup('env', 'USER') }}
-
-  - name: If user can run sudo, set subuids
-    when: "output.stderr != 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    become: yes
-    become_user: root
-    # TODO: this creates the same interval for different users
-    shell: "usermod -v 100000-165534 {{ lookup('env', 'USER') }}"
-
-  - name: If user can run sudo, set subgids
-    when: "output.stderr != 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    become: yes
-    become_user: root
-    # TODO: this creates the same interval for different users
-    shell: "usermod -w 100000-165534 {{ lookup('env', 'USER') }}"
-
   - name: Install rootless docker
     shell: "curl -fsSL https://get.docker.com/rootless | sh"
-    args:
-      warn: false
 
   - name: Start Docker registry service
     systemd:
