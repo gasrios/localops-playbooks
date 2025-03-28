@@ -12,6 +12,7 @@
       name: docker
       enabled: yes
       state: started
+      daemon_reload: yes
 
   - name: export DOCKER_HOST in .bashrc
     lineinfile:
