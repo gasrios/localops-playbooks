@@ -3,12 +3,17 @@
 - hosts: all
   tasks:
 
-  - shell: "lscpu | egrep 'Flags:.*[vmx|svm]' | wc -l"
+  - name: Check for hardware virtualization support
+    shell: "lscpu | egrep 'Flags:.*[vmx|svm]' | wc -l"
     register: virtualization_support
 
-  - when: virtualization_support.stdout == "0"
+  - name: Test whether hardware virtualization support is enabled
+    when: virtualization_support.stdout == "0"
     fail:
       msg: "Hardware virtualization support unavailable"
+
+  - debug:
+      msg: "Hardware virtualization support available, installing Qemu"
 
   - name: Update apt cache, if older than a day
     become: yes
