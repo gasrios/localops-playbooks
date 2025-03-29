@@ -2,6 +2,14 @@
   gather_facts: false
   tasks:
 
+  - name: Create gotosocial.localhost registry key
+    become: yes
+    become_user: root
+    openssl_privatekey:
+      owner: root
+      group: ssl-cert
+      path: /etc/ssl/private/gotosocial.localhost.key
+
   - name: Look for gotosocial.localhost registry certificate
     become: yes
     become_user: root
