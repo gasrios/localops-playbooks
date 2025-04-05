@@ -6,8 +6,6 @@
 
   - name: Get Helm latest version
     shell: "curl -Ls -o /dev/null -w %{url_effective} https://github.com/helm/helm/releases/latest | sed -e 's|.*/||'"
-    args:
-      warn: false
     register: version
 
   - name: Download Helm

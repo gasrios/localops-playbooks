@@ -11,9 +11,9 @@ then
   echo 'Static code check found no errors'
 fi
 
-for DISTRO in ubuntu-20.04
+for DISTRO in debian-bookworm debian-trixie ubuntu-22.04 ubuntu-24.04
 do
-  echo "Testing $PLAYBOOK in $DISTRO..."
+  echo "Testing $PLAYBOOK on $DISTRO..."
   docker run \
     --rm \
     -it \
