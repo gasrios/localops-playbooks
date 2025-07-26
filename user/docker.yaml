@@ -18,3 +18,20 @@
     lineinfile:
       path: "{{ lookup('env', 'HOME') }}/.bashrc"
       line: export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+  # Buildx must be installed separately; if in the future it is added to standard Docker, this won' be needed.
+  - name: Create ${HOME}/.docker/cli-plugins, if needed
+    file:
+      path: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins"
+      mode: '744'
+      state: directory
+
+  - name: Get docker buildx latest version
+    shell: "curl -Ls -o /dev/null -w %{url_effective} https://github.com/docker/buildx/releases/latest | sed -e 's|.*/||'"
+    register: version
+
+  - name: Install docker buildx
+    get_url:
+      url: https://github.com/docker/buildx/releases/download/{{ version.stdout }}/buildx-{{ version.stdout }}.linux-amd64
+      dest: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins/docker-buildx"
+      mode: '744'
