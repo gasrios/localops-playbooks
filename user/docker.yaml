@@ -9,7 +9,7 @@
   - name: Start Docker registry service
     systemd:
       scope: user
-      name: docker
+      name: docker.service
       enabled: yes
       state: started
       daemon_reload: yes
