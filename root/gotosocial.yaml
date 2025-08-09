@@ -1,0 +1,35 @@
+- name: Install nginx
+  import_playbook: nginx.yaml
+- name: Create certificate
+  import_playbook: gotosocial-certificate.yaml
+
+- hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Copy cthulhu.org
+    become: yes
+    become_user: root
+    copy:
+      src: gotosocial/cthulhu.org
+      dest: /etc/nginx/sites-available/cthulhu.org
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Create symlink to enable "cthulhu.org" site
+    become: yes
+    become_user: root
+    file:
+      src: /etc/nginx/sites-available/cthulhu.org
+      dest: /etc/nginx/sites-enabled/cthulhu.org
+      owner: root
+      group: root
+      state: link
+
+  - name: Reload Nginx
+    become: yes
+    become_user: root
+    service:
+      name: nginx
+      state: reloaded
