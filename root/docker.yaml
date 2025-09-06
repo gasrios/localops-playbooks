@@ -8,9 +8,35 @@
       update_cache: yes
       cache_valid_time: 86400
 
+  - name: Install iptables
+    become: yes
+    become_user: root
+    apt:
+      pkg: iptables
+      state: latest
+
   - name: Install uidmap
     become: yes
     become_user: root
     apt:
       pkg: uidmap
       state: latest
+
+  - name: If user can run sudo, set subuids
+    become: yes
+    become_user: root
+    # TODO: this creates the same interval for different users
+    shell: "/usr/sbin/usermod -v 100000-165534 {{ lookup('env', 'USER') }}"
+
+  - name: If user can run sudo, set subgids
+    become: yes
+    become_user: root
+    # TODO: this creates the same interval for different users
+    shell: "/usr/sbin/usermod -w 100000-165534 {{ lookup('env', 'USER') }}"
+
+  - name: modprobe nf_tables
+    become: yes
+    become_user: root
+    community.general.modprobe:
+      name: nf_tables
+      state: present

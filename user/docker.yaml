@@ -3,48 +3,35 @@
 - hosts: all
   tasks:
 
-  # We do not need a password, this is only meant to test whether this user can sudo.
-  - name: Test whether this user can run sudo
-    shell: echo '' | sudo -kSv
-    register: output
-    ignore_errors: True
-
-  # See https://docs.docker.com/engine/security/rootless/#prerequisites.
-  - name: If user cannot run sudo, give additional instructions
-    when: "output.stderr == 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    debug:
-      msg: |
-        An administrator must run the following commands to enable you to use rootless Docker:
-        	sudo usermod -v 100000-165534 {{ lookup('env', 'USER') }}
-        	sudo usermod -w 100000-165534 {{ lookup('env', 'USER') }}
-
-  - name: If user can run sudo, set subuids
-    when: "output.stderr != 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    become: yes
-    become_user: root
-    # TODO: this creates the same interval for different users
-    shell: "usermod -v 100000-165534 {{ lookup('env', 'USER') }}"
-
-  - name: If user can run sudo, set subgids
-    when: "output.stderr != 'Sorry, user ' + lookup('env', 'USER') + ' may not run sudo on ' + ansible_hostname + '.'"
-    become: yes
-    become_user: root
-    # TODO: this creates the same interval for different users
-    shell: "usermod -w 100000-165534 {{ lookup('env', 'USER') }}"
-
   - name: Install rootless docker
     shell: "curl -fsSL https://get.docker.com/rootless | sh"
-    args:
-      warn: false
 
   - name: Start Docker registry service
     systemd:
       scope: user
-      name: docker
+      name: docker.service
       enabled: yes
       state: started
+      daemon_reload: yes
 
   - name: export DOCKER_HOST in .bashrc
     lineinfile:
       path: "{{ lookup('env', 'HOME') }}/.bashrc"
       line: export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/docker.sock
+
+  # Buildx must be installed separately; if in the future it is added to standard Docker, this won' be needed.
+  - name: Create ${HOME}/.docker/cli-plugins, if needed
+    file:
+      path: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins"
+      mode: '744'
+      state: directory
+
+  - name: Get docker buildx latest version
+    shell: "curl -Ls -o /dev/null -w %{url_effective} https://github.com/docker/buildx/releases/latest | sed -e 's|.*/||'"
+    register: version
+
+  - name: Install docker buildx
+    get_url:
+      url: https://github.com/docker/buildx/releases/download/{{ version.stdout }}/buildx-{{ version.stdout }}.linux-amd64
+      dest: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins/docker-buildx"
+      mode: '744'

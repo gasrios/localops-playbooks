@@ -1,0 +1,47 @@
+# https://wiki.debian.org/QEMU
+
+- hosts: all
+  tasks:
+
+  - name: Check for hardware virtualization support
+    shell: "lscpu | egrep 'Flags:.*[vmx|svm]' | wc -l"
+    register: virtualization_support
+
+  - name: Test whether hardware virtualization support is enabled
+    when: virtualization_support.stdout == "0"
+    fail:
+      msg: "Hardware virtualization support unavailable"
+
+  - debug:
+      msg: "Hardware virtualization support available, installing Qemu"
+
+  - name: Update apt cache, if older than a day
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      cache_valid_time: 86400
+
+  - name: Install qemu-kvm
+    become: yes
+    become_user: root
+    apt:
+      state: latest
+      pkg: qemu-kvm
+      install_recommends: no
+
+  - name: Install qemu-utils
+    become: yes
+    become_user: root
+    apt:
+      state: latest
+      pkg: qemu-utils
+      install_recommends: no
+
+  - name: Install qemu-system-gui
+    become: yes
+    become_user: root
+    apt:
+      state: latest
+      pkg: qemu-system-gui
+      install_recommends: no

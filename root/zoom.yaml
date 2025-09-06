@@ -6,6 +6,7 @@
       url=https://zoom.us/client/latest/zoom_amd64.deb
       dest=/tmp/zoom_amd64.deb
 
+  # TODO: Debian (maybe Ubuntu too, double check) need PATH=/sbin:$PATH
   - name: Install Zoom
     become: true
     become_user: root
