@@ -1,0 +1,32 @@
+# See https://github.com/coonrad/Debian-Gnome-Minimal-Install
+
+- hosts: all
+  gather_facts: false
+  tasks:
+
+  - name: Gnome minimal install
+    become: yes
+    become_user: root
+    apt:
+      state: latest
+      pkg:
+      - eog
+      - evince
+      - gnome-calculator
+      - gnome-disk-utility
+      - gnome-screenshot
+      - gnome-session
+      - gnome-shell-extensions
+      - gnome-system-monitor
+      - gnome-terminal
+      - gnome-tweaks
+      - gnome-shell-extension-appindicator
+      - gnome-shell-extension-dashtodock
+      - gnome-shell-extension-desktop-icons-ng
+      - nautilus
+      - nautilus-wipe
+      - network-manager-gnome
+      - network-manager-openvpn
+      - network-manager-openvpn-gnome
+      - wl-clipboard
+      - xsel
