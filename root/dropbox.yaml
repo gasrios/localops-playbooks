@@ -2,23 +2,17 @@
   gather_facts: false
   tasks:
 
-  # See https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html#examples
-  - name: Add Dropbox apt repository signing key
-    become: yes
-    become_user: root
-    apt_key:
-      keyserver: keyserver.ubuntu.com
-      id: FC918B335044912E
-      state: present
-
-  # TODO this is specific to Debian, make it conditional
-  - name: Install python3-debian
-    become: yes
-    become_user: root
-    apt:
-      state: latest
-      pkg: python3-debian
-
+  # Audit Repositories should provide a clear-signed InRelease file,
+  # but none found at http://linux.dropbox.com/debian/dists/trixie/InRelease.
+  # Warning http://linux.dropbox.com/debian/dists/trixie/Release.gpg
+  # Policy will reject signature within a year, see --audit for details
+  # Audit http://linux.dropbox.com/debian/dists/trixie/Release.gpg
+  # Sub-process /usr/bin/sqv returned an error code (1), error message is
+  #    Signing key on 1C61A2656FB57B7E4DE0F4C1FC918B335044912E is not bound
+  #               No binding signature at time 2025-05-30T19:08:45Z
+  #      because Policy rejected non-revocation signature (PositiveCertification)
+  #               requiring second pre-image resistance
+  #      because SHA1 is not considered secure since 2026-02-01T00:00:00Z
   - name: Add Dropbox repo
     become: yes
     become_user: root
@@ -26,30 +20,22 @@
       name: dropbox
       types: deb
       uris: http://linux.dropbox.com/debian
-      suites: bookworm
+      suites: trixie
       components:
         - main
       architectures: amd64
+      # https://fabianlee.org/2022/12/21/ubuntu-fix-apt-warning-for-dropbox-with-key-in-legacy-keyring/
+      signed_by: https://linux.dropbox.com/fedora/rpm-public-key.asc
       state: present
       enabled: true
-
-  - name: Update apt cache, if older than a day
-    become: yes
-    become_user: root
-    apt:
-      update_cache: yes
-      cache_valid_time: 86400
-
-  - name: Install python3-gpg
-    become: yes
-    become_user: root
-    apt:
-      state: latest
-      pkg: python3-gpg
 
   - name: Install Dropbox
     become: yes
     become_user: root
     apt:
+      update_cache: yes
+      cache_valid_time: 60
       state: latest
-      pkg: dropbox
+      pkg:
+        - python3-gpg
+        - dropbox
