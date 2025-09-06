@@ -1,31 +1,32 @@
+# See https://www.spotify.com/us/download/linux/
 - hosts: all
   gather_facts: false
   tasks:
 
-  - name: Add Spotify apt repository signing key
-    become: yes
-    become_user: root
-    apt_key:
-      url: https://download.spotify.com/debian/pubkey_6224F9941A8AA6D1.gpg
-      state: present
-
   - name: Add Spotify apt repo
     become: yes
     become_user: root
-    apt_repository:
-      repo: deb http://repository.spotify.com stable non-free
+    deb822_repository:
+      name: spotify
+      types: deb
+      uris: http://repository.spotify.com
+      suites: stable
+      components:
+        - non-free
+      architectures: amd64
+      # Spotify updates the repo's key every now and then, and it breaks the playbook.
+      # Check the link above and update the key, in case this happens.
+      #
+      # TODO automate extracting the key from the page
+      signed_by: https://download.spotify.com/debian/pubkey_C85668DF69375001.gpg
       state: present
-
-  - name: Update apt cache, if older than a day
-    become: yes
-    become_user: root
-    apt:
-      update_cache: yes
-      cache_valid_time: 86400
+      enabled: true
 
   - name: Install spotify-client
     become: yes
     become_user: root
     apt:
+      update_cache: yes
+      cache_valid_time: 60
       state: latest
       pkg: spotify-client
